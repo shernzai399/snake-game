@@ -8,11 +8,17 @@ const overlayText = document.querySelector("#overlay-text");
 const startButton = document.querySelector("#start");
 const pauseButton = document.querySelector("#pause");
 const restartButton = document.querySelector("#restart");
+const playerForm = document.querySelector("#player-form");
+const playerNameInput = document.querySelector("#player-name");
+const playerStatus = document.querySelector("#player-status");
+const leaderboardList = document.querySelector("#leaderboard-list");
+const clearBoardButton = document.querySelector("#clear-board");
 
 const cells = 20;
 const tile = canvas.width / cells;
 const tickMs = 145;
 const minSwipeDistance = 24;
+const leaderboardLimit = 8;
 
 let snake;
 let food;
@@ -23,8 +29,13 @@ let best = Number(localStorage.getItem("snake-best") || 0);
 let timer = null;
 let gameState = "ready";
 let pointerStart = null;
+let currentPlayer = localStorage.getItem("snake-player") || "";
+let leaderboard = loadLeaderboard();
 
 bestEl.textContent = best;
+playerNameInput.value = currentPlayer;
+updatePlayerStatus();
+renderLeaderboard();
 
 function resetGame() {
   snake = [
@@ -40,11 +51,12 @@ function resetGame() {
   scoreEl.textContent = score;
   food = placeFood();
   gameState = "ready";
-  showOverlay("Ready?", "Press Space or tap Start to play.");
+  showOverlay("Ready?", currentPlayer ? "Press Space or tap Start to play." : "Enter your name, then press Start.");
   draw();
 }
 
 function startGame() {
+  if (!ensurePlayerName()) return;
   if (gameState === "running") return;
   if (gameState === "gameover") resetGame();
 
@@ -130,7 +142,90 @@ function endGame() {
     bestEl.textContent = best;
   }
 
+  savePlayerScore();
   showOverlay("Game over", "Press Space or tap Restart for another run.");
+}
+
+function ensurePlayerName() {
+  const name = cleanName(playerNameInput.value);
+
+  if (!name) {
+    showOverlay("Name first", "Type your name below, then press Start.");
+    playerNameInput.focus();
+    return false;
+  }
+
+  setCurrentPlayer(name);
+  return true;
+}
+
+function cleanName(name) {
+  return name.trim().replace(/\s+/g, " ").slice(0, 16);
+}
+
+function setCurrentPlayer(name) {
+  currentPlayer = name;
+  localStorage.setItem("snake-player", currentPlayer);
+  updatePlayerStatus();
+}
+
+function updatePlayerStatus() {
+  playerStatus.textContent = currentPlayer ? `Playing as ${currentPlayer}` : "No player yet";
+}
+
+function loadLeaderboard() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("snake-leaderboard") || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLeaderboard() {
+  localStorage.setItem("snake-leaderboard", JSON.stringify(leaderboard));
+}
+
+function savePlayerScore() {
+  if (!currentPlayer) return;
+
+  const oldScore = leaderboard.find((entry) => entry.name.toLowerCase() === currentPlayer.toLowerCase());
+
+  if (oldScore) {
+    oldScore.name = currentPlayer;
+    oldScore.score = Math.max(oldScore.score, score);
+  } else {
+    leaderboard.push({ name: currentPlayer, score });
+  }
+
+  leaderboard.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  leaderboard = leaderboard.slice(0, leaderboardLimit);
+  saveLeaderboard();
+  renderLeaderboard();
+}
+
+function renderLeaderboard() {
+  leaderboardList.innerHTML = "";
+
+  if (leaderboard.length === 0) {
+    const empty = document.createElement("li");
+    empty.textContent = "No scores yet";
+    leaderboardList.append(empty);
+    return;
+  }
+
+  leaderboard.forEach((entry) => {
+    const item = document.createElement("li");
+    const row = document.createElement("span");
+    const name = document.createElement("b");
+    const scoreText = document.createElement("strong");
+
+    name.textContent = entry.name;
+    scoreText.textContent = entry.score;
+    row.append(name, scoreText);
+    item.append(row);
+    leaderboardList.append(item);
+  });
 }
 
 function changeDirection(newDirection) {
@@ -286,6 +381,19 @@ canvas.addEventListener("pointerup", (event) => {
   if (gameState !== "running") {
     startGame();
   }
+});
+
+playerForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (ensurePlayerName()) {
+    showOverlay("Ready?", "Press Space or tap Start to play.");
+  }
+});
+
+clearBoardButton.addEventListener("click", () => {
+  leaderboard = [];
+  saveLeaderboard();
+  renderLeaderboard();
 });
 
 startButton.addEventListener("click", startGame);

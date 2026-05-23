@@ -24,9 +24,18 @@
           <canvas id="board" width="560" height="560" aria-label="Snake play area"></canvas>
           <div class="overlay" id="overlay">
             <h2 id="overlay-title">Ready?</h2>
-            <p id="overlay-text">Press Space or tap Start to play.</p>
+            <p id="overlay-text">Enter your name, then press Start.</p>
           </div>
         </div>
+
+        <form class="player-form" id="player-form">
+          <label for="player-name">Player name</label>
+          <div class="name-row">
+            <input id="player-name" name="player-name" type="text" maxlength="16" autocomplete="nickname" placeholder="Your name">
+            <button type="submit">Save Name</button>
+          </div>
+          <p id="player-status">No player yet</p>
+        </form>
 
         <div class="controls">
           <button id="start" type="button">Start</button>
@@ -34,11 +43,19 @@
           <button id="restart" type="button">Restart</button>
         </div>
 
+        <section class="leaderboard" aria-labelledby="leaderboard-title">
+          <div class="leaderboard-head">
+            <h2 id="leaderboard-title">Score Board</h2>
+            <button id="clear-board" type="button">Clear</button>
+          </div>
+          <ol id="leaderboard-list"></ol>
+        </section>
+
         <div class="dpad" aria-label="Touch controls">
-          <button class="dir up" type="button" data-dir="up" aria-label="Move up">↑</button>
-          <button class="dir left" type="button" data-dir="left" aria-label="Move left">←</button>
-          <button class="dir right" type="button" data-dir="right" aria-label="Move right">→</button>
-          <button class="dir down" type="button" data-dir="down" aria-label="Move down">↓</button>
+          <button class="dir up" type="button" data-dir="up" aria-label="Move up">&uarr;</button>
+          <button class="dir left" type="button" data-dir="left" aria-label="Move left">&larr;</button>
+          <button class="dir right" type="button" data-dir="right" aria-label="Move right">&rarr;</button>
+          <button class="dir down" type="button" data-dir="down" aria-label="Move down">&darr;</button>
         </div>
       </section>
     </main>

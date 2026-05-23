@@ -46,6 +46,22 @@ button:active {
   transform: translateY(1px);
 }
 
+input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: #151d15;
+  color: var(--text);
+  font: inherit;
+  min-height: 48px;
+  padding: 0 12px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--accent);
+}
+
 .game-shell {
   min-height: 100vh;
   display: grid;
@@ -160,6 +176,77 @@ canvas {
   min-height: 48px;
 }
 
+.player-form,
+.leaderboard {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  background: rgba(32, 40, 32, 0.72);
+  padding: 14px;
+}
+
+.player-form label,
+.leaderboard h2 {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.name-row button {
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+#player-status {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.leaderboard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.leaderboard-head button {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 0.86rem;
+}
+
+#leaderboard-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 24px;
+}
+
+#leaderboard-list li {
+  padding: 8px 10px;
+  border: 1px solid rgba(64, 80, 64, 0.68);
+  background: rgba(21, 29, 21, 0.78);
+}
+
+#leaderboard-list span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#leaderboard-list strong {
+  color: var(--snake-head);
+}
+
 .dpad {
   display: grid;
   width: 244px;
@@ -211,6 +298,10 @@ canvas {
 
   .scoreboard span {
     flex: 1;
+  }
+
+  .name-row {
+    grid-template-columns: 1fr;
   }
 
   .dpad {
