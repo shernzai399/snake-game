@@ -11,6 +11,7 @@ const restartButton = document.querySelector("#restart");
 const playerForm = document.querySelector("#player-form");
 const playerNameInput = document.querySelector("#player-name");
 const playerStatus = document.querySelector("#player-status");
+const leaderboard = document.querySelector(".leaderboard");
 const leaderboardList = document.querySelector("#leaderboard-list");
 const clearBoardButton = document.querySelector("#clear-board");
 
@@ -30,7 +31,7 @@ let timer = null;
 let gameState = "ready";
 let pointerStart = null;
 let currentPlayer = localStorage.getItem("snake-player") || "";
-let leaderboard = loadLeaderboard();
+let leaderboardScores = loadLeaderboard();
 
 bestEl.textContent = best;
 playerNameInput.value = currentPlayer;
@@ -144,6 +145,7 @@ function endGame() {
 
   savePlayerScore();
   showOverlay("Game over", "Press Space or tap Restart for another run.");
+  jumpToScoreBoard();
 }
 
 function ensurePlayerName() {
@@ -183,23 +185,23 @@ function loadLeaderboard() {
 }
 
 function saveLeaderboard() {
-  localStorage.setItem("snake-leaderboard", JSON.stringify(leaderboard));
+  localStorage.setItem("snake-leaderboard", JSON.stringify(leaderboardScores));
 }
 
 function savePlayerScore() {
   if (!currentPlayer) return;
 
-  const oldScore = leaderboard.find((entry) => entry.name.toLowerCase() === currentPlayer.toLowerCase());
+  const oldScore = leaderboardScores.find((entry) => entry.name.toLowerCase() === currentPlayer.toLowerCase());
 
   if (oldScore) {
     oldScore.name = currentPlayer;
     oldScore.score = Math.max(oldScore.score, score);
   } else {
-    leaderboard.push({ name: currentPlayer, score });
+    leaderboardScores.push({ name: currentPlayer, score });
   }
 
-  leaderboard.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  leaderboard = leaderboard.slice(0, leaderboardLimit);
+  leaderboardScores.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  leaderboardScores = leaderboardScores.slice(0, leaderboardLimit);
   saveLeaderboard();
   renderLeaderboard();
 }
@@ -207,18 +209,22 @@ function savePlayerScore() {
 function renderLeaderboard() {
   leaderboardList.innerHTML = "";
 
-  if (leaderboard.length === 0) {
+  if (leaderboardScores.length === 0) {
     const empty = document.createElement("li");
     empty.textContent = "No scores yet";
     leaderboardList.append(empty);
     return;
   }
 
-  leaderboard.forEach((entry) => {
+  leaderboardScores.forEach((entry, index) => {
     const item = document.createElement("li");
     const row = document.createElement("span");
     const name = document.createElement("b");
     const scoreText = document.createElement("strong");
+
+    if (index === 0) {
+      item.classList.add("top-score");
+    }
 
     name.textContent = entry.name;
     scoreText.textContent = entry.score;
@@ -226,6 +232,12 @@ function renderLeaderboard() {
     item.append(row);
     leaderboardList.append(item);
   });
+}
+
+function jumpToScoreBoard() {
+  window.setTimeout(() => {
+    leaderboard.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 350);
 }
 
 function changeDirection(newDirection) {
@@ -391,7 +403,7 @@ playerForm.addEventListener("submit", (event) => {
 });
 
 clearBoardButton.addEventListener("click", () => {
-  leaderboard = [];
+  leaderboardScores = [];
   saveLeaderboard();
   renderLeaderboard();
 });

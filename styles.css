@@ -247,6 +247,11 @@ canvas {
   color: var(--snake-head);
 }
 
+#leaderboard-list .top-score {
+  border-color: var(--accent);
+  background: rgba(255, 209, 102, 0.12);
+}
+
 .dpad {
   display: grid;
   width: 244px;
