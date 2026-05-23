@@ -11,7 +11,8 @@ const restartButton = document.querySelector("#restart");
 
 const cells = 20;
 const tile = canvas.width / cells;
-const tickMs = 115;
+const tickMs = 145;
+const minSwipeDistance = 24;
 
 let snake;
 let food;
@@ -21,6 +22,7 @@ let score;
 let best = Number(localStorage.getItem("snake-best") || 0);
 let timer = null;
 let gameState = "ready";
+let pointerStart = null;
 
 bestEl.textContent = best;
 
@@ -131,10 +133,41 @@ function endGame() {
 
 function changeDirection(newDirection) {
   const movingOpposite =
-    newDirection.x + direction.x === 0 && newDirection.y + direction.y === 0;
+    newDirection.x + nextDirection.x === 0 && newDirection.y + nextDirection.y === 0;
 
   if (!movingOpposite) {
     nextDirection = newDirection;
+  }
+}
+
+function steerTowardPoint(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  const targetX = ((clientX - rect.left) / rect.width) * cells;
+  const targetY = ((clientY - rect.top) / rect.height) * cells;
+  const head = snake[0];
+  const dx = targetX - head.x - 0.5;
+  const dy = targetY - head.y - 0.5;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    changeDirection({ x: dx < 0 ? -1 : 1, y: 0 });
+  } else {
+    changeDirection({ x: 0, y: dy < 0 ? -1 : 1 });
+  }
+}
+
+function steerFromSwipe(start, end) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < minSwipeDistance) {
+    steerTowardPoint(end.x, end.y);
+    return;
+  }
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    changeDirection({ x: Math.sign(dx), y: 0 });
+  } else {
+    changeDirection({ x: 0, y: Math.sign(dy) });
   }
 }
 
@@ -236,6 +269,21 @@ document.querySelectorAll("[data-dir]").forEach((button) => {
     };
     changeDirection(touchDirections[dir]);
   });
+});
+
+canvas.addEventListener("pointerdown", (event) => {
+  pointerStart = { x: event.clientX, y: event.clientY };
+});
+
+canvas.addEventListener("pointerup", (event) => {
+  if (!pointerStart) return;
+
+  steerFromSwipe(pointerStart, { x: event.clientX, y: event.clientY });
+  pointerStart = null;
+
+  if (gameState !== "running") {
+    startGame();
+  }
 });
 
 startButton.addEventListener("click", startGame);
