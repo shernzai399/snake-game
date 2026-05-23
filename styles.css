@@ -254,11 +254,11 @@ canvas {
 
 .dpad {
   display: grid;
-  width: 244px;
-  grid-template-columns: repeat(3, 72px);
-  grid-template-rows: repeat(3, 72px);
-  gap: 14px;
-  margin: 16px auto 0;
+  width: 214px;
+  grid-template-columns: repeat(3, 64px);
+  grid-template-rows: repeat(3, 64px);
+  gap: 11px;
+  margin: 12px auto 0;
 }
 
 .dir {
@@ -310,9 +310,9 @@ canvas {
   }
 
   .dpad {
-    width: 214px;
-    grid-template-columns: repeat(3, 64px);
-    grid-template-rows: repeat(3, 64px);
-    gap: 11px;
+    width: 184px;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    gap: 8px;
   }
 }
