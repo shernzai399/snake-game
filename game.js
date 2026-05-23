@@ -19,8 +19,6 @@ const cells = 20;
 const tile = canvas.width / cells;
 const tickMs = 145;
 const minSwipeDistance = 24;
-const leaderboardLimit = 8;
-
 let snake;
 let food;
 let direction;
@@ -201,7 +199,6 @@ function savePlayerScore() {
   }
 
   leaderboardScores.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  leaderboardScores = leaderboardScores.slice(0, leaderboardLimit);
   saveLeaderboard();
   renderLeaderboard();
 }
