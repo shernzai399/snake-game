@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Snake</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="game-panel" aria-label="Snake game">
+        <header class="hud">
+          <div>
+            <p class="eyebrow">Classic Snake</p>
+            <h1>Snake</h1>
+          </div>
+          <div class="scoreboard" aria-live="polite">
+            <span>Score <strong id="score">0</strong></span>
+            <span>Best <strong id="best">0</strong></span>
+          </div>
+        </header>
+
+        <div class="board-wrap">
+          <canvas id="board" width="560" height="560" aria-label="Snake play area"></canvas>
+          <div class="overlay" id="overlay">
+            <h2 id="overlay-title">Ready?</h2>
+            <p id="overlay-text">Press Space or tap Start to play.</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="start" type="button">Start</button>
+          <button id="pause" type="button">Pause</button>
+          <button id="restart" type="button">Restart</button>
+        </div>
+
+        <div class="dpad" aria-label="Touch controls">
+          <button class="dir up" type="button" data-dir="up" aria-label="Move up">↑</button>
+          <button class="dir left" type="button" data-dir="left" aria-label="Move left">←</button>
+          <button class="dir right" type="button" data-dir="right" aria-label="Move right">→</button>
+          <button class="dir down" type="button" data-dir="down" aria-label="Move down">↓</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
