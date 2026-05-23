@@ -31,6 +31,8 @@ function resetGame() {
     { x: 9, y: 10 },
     { x: 8, y: 10 },
     { x: 7, y: 10 },
+    { x: 6, y: 10 },
+    { x: 5, y: 10 },
   ];
   direction = { x: 1, y: 0 };
   nextDirection = { x: 1, y: 0 };
@@ -200,7 +202,7 @@ function drawGrid() {
 
 function drawSnake() {
   snake.forEach((segment, index) => {
-    ctx.fillStyle = index === 0 ? "#b7ff68" : "#7ee36d";
+    ctx.fillStyle = index === 0 ? "#ff3b30" : "#7ee36d";
     drawRoundedCell(segment.x, segment.y, 7);
   });
 }
